@@ -53,6 +53,8 @@ public class Boletin {
     public void setAltura(double altura) {
         this.altura = altura;
     }
+    
+    public void nada(){}
     private String perfilAlerta;
     private String zona;
     private double tiempoLlegada;
