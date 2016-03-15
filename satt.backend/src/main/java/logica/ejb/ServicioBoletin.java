@@ -6,10 +6,12 @@
 package logica.ejb;
 
 import dto.Boletin;
+import dto.Coordenadas;
 import dto.Evento;
 import dto.Sensor;
 import dto.Zona;
 import java.util.ArrayList;
+import java.util.List;
 import javax.ejb.Stateless;
 import logica.interfaces.IServicioBoletinLocal;
 import logica.interfaces.IServicioBoletinRemote;
@@ -23,66 +25,50 @@ import persistencia.ServicioPersistencia;
 @Stateless
 public class ServicioBoletin implements IServicioBoletinLocal, IServicioBoletinRemote {
 
-    private IServicioPersistenciaLocal persistencia;
+   private IServicioPersistenciaLocal persistencia;
     
     public ServicioBoletin () {
         persistencia=new ServicioPersistencia();
     }
     
     @Override
-    public Boletin generarBoletin(Evento e) {
-        ArrayList sensores=(ArrayList) persistencia.findAll(Sensor.class);
+    public Evento generarEvento(Evento e) {
+        //Se introduce el evento a la base de datos
+        try{persistencia.create(e);}
+        catch (Exception ex) {ex.printStackTrace();}
+        
+        double[][] coordenadas= new double[4000][2];
+        for (int i=0;i<4000;i++) {
+            coordenadas[i][0]=0.0025*i;
+            coordenadas[i][1]=0.0025*i;
+        }
         double latEvento=e.getLatitud();
         double lonEvento=e.getLongitud();
         
         //Se localiza el sensor mas cercano al evento
         double distanciaMinima=Integer.MAX_VALUE;
-        int indice =0;
-        for(int i=0;i<sensores.size();i++) {
-            Sensor s=(Sensor)sensores.get(i);
-            double latSensor=s.getLatitud();
-            double lonSensor=s.getLongitud();
-            double dist=distancia(latSensor, latEvento, lonSensor, lonEvento);
+        double latCercano=0;
+        double lonCercano=0;
+        
+        for(int i=0;i<4000;i++) {
+            double dist=distancia(coordenadas[i][0], latEvento, coordenadas[i][1], lonEvento);
             
             if (dist<distanciaMinima) 
             {
                 distanciaMinima=dist;
-                indice=i;
+                latCercano=coordenadas[i][0];
+                lonCercano=coordenadas[i][1];
             }
         }
-        Sensor cercano=(Sensor)sensores.get(indice);
-
-        System.out.println(cercano==null);
         
-        //Se deduce el tiempo de llegada a la costa
-        double tiempoLlegada=distanciaMinima/cercano.getVelocidad();
-
-        //Se determina el perfil de alerta dados los parametros y zona
-        int urgencia=0;
-        Zona zona=(Zona)persistencia.findById(Zona.class, cercano.getZona());
-        
-        System.out.println(zona==null);
-        
-        if (tiempoLlegada<=zona.gettMax()) urgencia++;
-        if (cercano.getAltura()>=zona.getAlturaMin()) urgencia++;
-        if (zona.getNombre().startsWith("P")) urgencia++;
-        else if (cercano.getAltura()>=zona.getAlturaMin()*1.5) urgencia++;
-
-        String perfil="";
-        if (urgencia==0) perfil="informativo";
-        else if (urgencia==1) perfil="precaucion";
-        else if (urgencia==2) perfil="alerta";
-        else perfil="alarma";
-        
-        String zonaGeneral="";
-        if (zona.getNombre().startsWith("P")) zonaGeneral="Pacifico";
-        else zonaGeneral="Atlantico";
+        //Se consigue el ultimo registro del sensor mas cercano
+        Sensor cercano=(Sensor) persistencia.findById(Sensor.class, new Coordenadas(latCercano,lonCercano));
         
         //Se inicializa un Thread que se encarga del seguimiento
-        //new ThreadSeguimiento(persistencia, indice, distanciaMinima);
+        new ThreadSeguimiento(persistencia, cercano, distanciaMinima);
         
-        //Finalmente se retorna el resultado
-        return (new Boletin(perfil, zonaGeneral, tiempoLlegada, cercano.getAltura()));
+        //Finalmente se retorna el evento como confirmacion de la ejecucion
+        return e;
     }
     
     
@@ -93,6 +79,17 @@ public class ServicioBoletin implements IServicioBoletinLocal, IServicioBoletinR
         double sec2 = Math.cos(lat1)* Math.cos(lat2);
         double centralAngle = Math.acos(sec1+sec2*Math.cos(dl));
         return  centralAngle * 6378.1;
+    }
+
+    @Override
+    public List<Boletin> getBoletines() {
+        
+        return persistencia.findAll(Boletin.class);
+    }
+
+    @Override
+    public List<Evento> getEventos() {
+        return persistencia.findAll(Evento.class);
     }
     
 }

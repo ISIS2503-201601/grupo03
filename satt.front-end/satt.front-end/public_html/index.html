@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html ng-app="satt">
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="css/app.css">
+    </head>
+    <body>
+        <script type="text/javascript" src="js/angular.min.js"></script>
+        <script type="text/javascript" src="js/AngularControllers/app.js"></script>
+        
+        <div class="container theme-showcase" role="main">
+ 
+            <div class="row featurette">
+                <div class="col-md-5">
+                    <img src="images/tsunami.jpg" class="img-responsive" alt="500x500" data-holder-rendered="true">
+                </div>
+                <div class="col-md-7">
+                    <h2>Sistema de Alerta Temprana de Tsunamis</h2>
+                    <p class="lead">
+                        "El fin se acerca" -Barack Obama
+                    </p>
+                </div>
+            </div>
+            <hr>
+            <toolbar></toolbar>
+            <div ng-if="toolbar.isSelected(1)">
+                <evento-form></evento-form>
+            </div>
+            <div ng-if="toolbar.isSelected(2)">
+                <actualizar-form></actualizar-form>
+            </div>
+            <div ng-if="toolbar.isSelected(3)">
+                <todos-boletines></todos-boletines>
+            </div>
+            <div ng-if="toolbar.isSelected(4)">
+                <todos-sensores></todos-sensores>
+            </div>
+            <div ng-if="toolbar.isSelected(5)">
+                <todos-eventos></todos-eventos>
+            </div>
+        </div>
+    </body>
+</html>

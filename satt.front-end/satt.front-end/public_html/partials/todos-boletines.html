@@ -1,0 +1,27 @@
+<h2 class="form-title">Todos los boletines</h2>
+<div class="panel panel-default">
+    <!-- Default panel contents -->
+    <div class="panel-heading">Registros</div>
+    <!-- Table -->
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Fecha</th>
+            <th>Zona</th>
+            <th>Perfil</th>
+            <th>Tiempo de llegada</th>
+            <th>Altura</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="boletin in boletines | orderBy: 'zona'">
+            <td>{{boletin.createdAt}}</td>
+            <td>{{boletin.zona}}</td>
+            <td>{{boletin.perfilAlerta}}</td>
+            <td>{{boletin.tiempoLlegada}}</td>
+            <td>{{boletin.altura}}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+

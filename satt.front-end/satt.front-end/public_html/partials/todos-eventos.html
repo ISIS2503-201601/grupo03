@@ -1,0 +1,24 @@
+<h2 class="form-title">Todos los eventos</h2>
+<div class="panel panel-default">
+    <!-- Default panel contents -->
+    <div class="panel-heading">Registros</div>
+    <!-- Table -->
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Fecha</th>
+            <th>Latitud</th>
+            <th>Longitud</th>
+            <th>Distancia a la costa</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="evento in eventos | orderBy: 'distancia'">
+            <td>{{evento.createdAt}}</td>
+            <td>{{evento.latitud}}</td>
+            <td>{{evento.longitud}}</td>
+            <td>{{evento.distancia}}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>

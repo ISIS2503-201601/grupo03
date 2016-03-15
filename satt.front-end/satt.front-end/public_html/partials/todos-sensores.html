@@ -1,0 +1,28 @@
+<h2 class="form-title">Todos los registros</h2>
+<div class="panel panel-default">
+    <!-- Default panel contents -->
+    <div class="panel-heading">Registros</div>
+    <!-- Table -->
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Fecha</th>
+            <th>Zona</th>
+            <th>Latitud</th>
+            <th>Longitud</th>
+            <th>Altura</th>
+            <th>Velocidad</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="sensor in sensores | orderBy: 'zona'">
+            <td>{{sensor.createdAt}}</td>
+            <td>{{sensor.zona}}</td>
+            <td>{{sensor.latitud}}</td>
+            <td>{{sensor.longitud}}</td>
+            <td>{{sensor.altura}}</td>
+            <td>{{sensor.velocidad}}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>

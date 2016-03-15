@@ -5,10 +5,18 @@
  */
 package dto;
 
+import javax.persistence.Entity;
+import javax.xml.bind.annotation.XmlRootElement;
+import org.eclipse.persistence.nosql.annotations.DataFormatType;
+import org.eclipse.persistence.nosql.annotations.NoSql;
+
 /**
  *
  * @author jf.ceron10
  */
+@NoSql(dataFormat=DataFormatType.MAPPED)
+@Entity
+@XmlRootElement
 public class Zona {
 
     public Zona(String nombre, double tMax, double alturaMin) {

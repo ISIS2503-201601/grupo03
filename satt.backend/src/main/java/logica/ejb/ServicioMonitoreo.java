@@ -7,6 +7,8 @@ package logica.ejb;
 
 import dto.Sensor;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import logica.interfaces.IServicioMonitoreoLocal;
 import logica.interfaces.IServicioMonitoreoRemote;
@@ -20,7 +22,7 @@ import persistencia.ServicioPersistencia;
 @Stateless
 public class ServicioMonitoreo implements IServicioMonitoreoLocal, IServicioMonitoreoRemote{
 
-    public ServicioMonitoreo() {
+     public ServicioMonitoreo() {
         persistencia=new ServicioPersistencia();
     }
 
@@ -28,7 +30,11 @@ public class ServicioMonitoreo implements IServicioMonitoreoLocal, IServicioMoni
     
     @Override
     public void actualizarSensor(Sensor s) {
-        persistencia.update(s);
+        try {
+            persistencia.create(s);
+        } catch (Exception ex) {
+            Logger.getLogger(ServicioMonitoreo.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override

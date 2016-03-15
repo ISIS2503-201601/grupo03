@@ -5,6 +5,9 @@
  */
 package persistencia;
 
+import dto.Boletin;
+import dto.Coordenadas;
+import dto.Evento;
 import dto.Sensor;
 import dto.Zona;
 import java.util.ArrayList;
@@ -20,12 +23,15 @@ public class ServicioPersistencia implements IServicioPersistenciaLocal, IServic
 
     private static ArrayList<Zona> zonas;
     private static ArrayList<Sensor> sensores;
+    private static ArrayList<Evento> eventos;
+    private static ArrayList<Boletin> boletines;
     
     public ServicioPersistencia() {
         if (sensores==null) {
             sensores=new ArrayList<Sensor>();
             
             //Creacion de sensores 
+            
             for (int i=0;i<4000;i++) {
                 String zona="";
                 if (i<444) zona="A_Guajira";
@@ -55,11 +61,17 @@ public class ServicioPersistencia implements IServicioPersistenciaLocal, IServic
             zonas.add(new Zona("P_Cauca", 7500, 13));
             zonas.add(new Zona("P_Narino", 16000, 13.12));
         }
+        
+        if (eventos==null) eventos=new ArrayList<Evento>();
+        if (boletines==null) boletines=new ArrayList<Boletin>();
     }
     
     @Override
     public void create(Object obj) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (obj instanceof Sensor) sensores.add((Sensor)obj);
+        else if (obj instanceof Evento) eventos.add((Evento)obj);
+        else if (obj instanceof Boletin) boletines.add((Boletin)obj);
+        else if (obj instanceof Zona) zonas.add((Zona)obj);
     }
 
     @Override
@@ -86,37 +98,27 @@ public class ServicioPersistencia implements IServicioPersistenciaLocal, IServic
     public List findAll(Class c) {
         if (c.equals(Sensor.class)) return sensores;
         else if (c.equals(Zona.class)) return zonas;
+        else if (c.equals(Boletin.class)) return boletines;
+        else if (c.equals(Evento.class)) return eventos;
         return new ArrayList();
     }
 
     @Override
     public Object findById(Class c, Object id) {
-        if (c.equals(Zona.class)) 
-        {
-            for (Zona z : zonas) 
-            {
+        if (c.equals(Sensor.class)) {
+            //SOLO DEBE DEVOLVER EL REGISTRO MAS RECIENTE
+            //DEL SENSOR EN ESAS COORDENADAS
+            for (Sensor s : sensores) {
+                Coordenadas coor=(Coordenadas)id;
+                if (s.getLatitud()==coor.getLatitud()&&
+                    s.getLongitud()==coor.getLongitud()) return s;
+            }
+        }
+        else if (c.equals(Zona.class)) {
+            for (Zona z : zonas) {
                 if (z.getNombre().equals((String)id)) return z;
             }
-            return null;
-        }       
-        else throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
-    public Sensor findSensor(double lat, double lon) {
-        for (Sensor s : sensores) {
-            if (s.getLatitud()==lat&& s.getLongitud()==lon) {
-                    return s;
-            }
         }
-        return null;
-    }
-    
-    public Zona findZona(String nombre) {
-        for (Zona z : zonas) {
-            if (z.getNombre().equals(nombre)) {
-                    return z;
-            }
-        }
-        return null;
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

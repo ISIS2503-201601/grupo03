@@ -2,6 +2,7 @@ package logica.interfaces;
 
 import dto.Boletin;
 import dto.Evento;
+import java.util.List;
 import javax.ejb.Local;
 
 /**
@@ -10,5 +11,7 @@ import javax.ejb.Local;
  */
 @Local
 public interface IServicioBoletinLocal {
-    public Boletin generarBoletin(Evento e );
+    public Evento generarEvento(Evento e );
+    public List<Boletin> getBoletines();
+    public List<Evento> getEventos();
 }
