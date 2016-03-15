@@ -38,19 +38,7 @@ public class BoletinService {
     
     @POST
     @Path("generar/")
-    public Boletin generarBoletin(List<Evento> e) {
-        if (e.isEmpty())
-                {
-                    return null;
-                }
-        else
-        {
-            for (Evento event: e)
-                    {
-                        return boletinEjb.generarBoletin(event); 
-                    }
-            return null;
-        }
-       
+    public Boletin generarBoletin(Evento e) {
+        return boletinEjb.generarBoletin(e);
     }
 }
